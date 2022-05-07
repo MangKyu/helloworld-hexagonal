@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Validated
 @Transactional
 @RequiredArgsConstructor
-public class SendMoneyService implements SendMoneyUserCase {
+class SendMoneyService implements SendMoneyUserCase {
 
     private final LoadAccountPort loadAccountPort;
     private final AccountLock accountLock;
