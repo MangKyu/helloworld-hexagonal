@@ -1,7 +1,9 @@
 package com.mangkyu.hexagonal.account.application.port.in;
 
+import javax.validation.Valid;
+
 public interface SendMoneyUserCase {
 
-    boolean sendMoney(SendMoneyCommand sendMoneyCommand);
+    boolean sendMoney(@Valid SendMoneyCommand sendMoneyCommand);
 
 }

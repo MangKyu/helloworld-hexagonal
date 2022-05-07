@@ -12,6 +12,9 @@ public class Money {
     private final BigInteger amount;
 
     private static Money of(long value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Input money is less than 0");
+        }
         return new Money(BigInteger.valueOf(value));
     }
 

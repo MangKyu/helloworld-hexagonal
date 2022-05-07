@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+@Validated
 @Transactional
 @RequiredArgsConstructor
 public class SendMoneyService implements SendMoneyUserCase {
