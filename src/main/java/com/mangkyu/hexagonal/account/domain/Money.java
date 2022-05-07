@@ -1,9 +1,11 @@
 package com.mangkyu.hexagonal.account.domain;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigInteger;
 
+@Getter
 @RequiredArgsConstructor
 public class Money {
 
@@ -11,7 +13,7 @@ public class Money {
 
     private final BigInteger amount;
 
-    private static Money of(long value) {
+    public static Money of(long value) {
         if (value < 0) {
             throw new IllegalArgumentException("Input money is less than 0");
         }
@@ -34,4 +36,7 @@ public class Money {
         return this.amount.compareTo(BigInteger.ZERO) >= 0;
     }
 
+    public Long toLong() {
+        return amount.longValue();
+    }
 }
