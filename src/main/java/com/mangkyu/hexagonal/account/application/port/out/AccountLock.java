@@ -1,11 +1,11 @@
 package com.mangkyu.hexagonal.account.application.port.out;
 
-import com.mangkyu.hexagonal.account.domain.AccountId;
+import com.mangkyu.hexagonal.account.domain.Account;
 
 public interface AccountLock {
 
-	void lockAccount(AccountId accountId);
+	void lockAccount(Account.AccountId accountId);
 
-	void releaseAccount(AccountId accountId);
+	void releaseAccount(Account.AccountId accountId);
 
 }

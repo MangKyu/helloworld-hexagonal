@@ -2,7 +2,7 @@ package com.mangkyu.hexagonal.account.adapter.in.web;
 
 import com.mangkyu.hexagonal.account.application.port.in.SendMoneyCommand;
 import com.mangkyu.hexagonal.account.application.port.in.SendMoneyRequest;
-import com.mangkyu.hexagonal.account.domain.AccountId;
+import com.mangkyu.hexagonal.account.domain.Account;
 import com.mangkyu.hexagonal.account.domain.Money;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,8 @@ class SendMoneyController {
             @PathVariable("amount") Long amount) {
 
         SendMoneyRequest request = SendMoneyRequest.builder()
-                .sourceAccountId(new AccountId(sourceAccountId))
-                .targetAccountId(new AccountId(targetAccountId))
+                .sourceAccountId(new Account.AccountId(sourceAccountId))
+                .targetAccountId(new Account.AccountId(targetAccountId))
                 .money(Money.of(amount)).build();
 
         sendMoneyCommand.sendMoney(request);

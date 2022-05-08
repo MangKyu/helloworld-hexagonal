@@ -1,15 +1,30 @@
 package com.mangkyu.hexagonal.account.domain;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 import java.time.LocalDateTime;
 
+@Getter
+@RequiredArgsConstructor
 public class Account {
 
-    private AccountId id;
-    private Money baselineBalance;
-    private ActivityWindow activityWindow;
+    private final AccountId id;
+    private final Money baselineBalance;
+    private final ActivityWindow activityWindow;
+
+    public static Account withoutId(
+            Money baselineBalance,
+            ActivityWindow activityWindow) {
+        return new Account(null, baselineBalance, activityWindow);
+    }
+
+    public static Account withId(
+            AccountId accountId,
+            Money baselineBalance,
+            ActivityWindow activityWindow) {
+        return new Account(accountId, baselineBalance, activityWindow);
+    }
 
     public Money calculateBalance() {
         return Money.add(
@@ -19,12 +34,13 @@ public class Account {
     }
 
     public boolean deposit(Money money, AccountId sourceAccountId) {
-        Activity deposit = new Activity(
-                this.id,
-                sourceAccountId,
-                this.id,
-                LocalDateTime.now(),
-                money);
+        Activity deposit = Activity.builder()
+                .ownerAccountId(this.id)
+                .sourceAccountId(sourceAccountId)
+                .targetAccountId(this.id)
+                .timestamp(LocalDateTime.now())
+                .money(money).build();
+
         this.activityWindow.addActivity(deposit);
         return true;
     }
@@ -34,13 +50,12 @@ public class Account {
             return false;
         }
 
-        Activity withdrawal = new Activity(
-                id,
-                id,
-                targetAccountId,
-                LocalDateTime.now(),
-                money
-        );
+        Activity withdrawal = Activity.builder()
+                .ownerAccountId(this.id)
+                .sourceAccountId(this.id)
+                .targetAccountId(targetAccountId)
+                .timestamp(LocalDateTime.now())
+                .money(money).build();
 
         activityWindow.addActivity(withdrawal);
         return true;
@@ -51,6 +66,14 @@ public class Account {
                         this.calculateBalance(),
                         money.negate())
                 .isPositiveOrZero();
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class AccountId {
+
+        private final long value;
+
     }
 
 }

@@ -1,7 +1,10 @@
 package com.mangkyu.hexagonal.account.domain;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class ActivityWindow {
 
     private final List<Activity> activities;
@@ -14,7 +17,7 @@ public class ActivityWindow {
         this.activities.add(activity);
     }
 
-    public Money calculateBalance(AccountId accountId) {
+    public Money calculateBalance(Account.AccountId accountId) {
         Money depositBalance = activities.stream()
                 .filter(a -> a.getTargetAccountId().equals(accountId))
                 .map(Activity::getMoney)

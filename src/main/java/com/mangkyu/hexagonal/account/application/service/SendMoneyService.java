@@ -1,12 +1,11 @@
 package com.mangkyu.hexagonal.account.application.service;
 
-import com.mangkyu.hexagonal.account.application.port.in.SendMoneyRequest;
 import com.mangkyu.hexagonal.account.application.port.in.SendMoneyCommand;
+import com.mangkyu.hexagonal.account.application.port.in.SendMoneyRequest;
 import com.mangkyu.hexagonal.account.application.port.out.AccountLock;
 import com.mangkyu.hexagonal.account.application.port.out.LoadAccountPort;
 import com.mangkyu.hexagonal.account.application.port.out.UpdateAccountStatePort;
 import com.mangkyu.hexagonal.account.domain.Account;
-import com.mangkyu.hexagonal.account.domain.AccountId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +31,7 @@ class SendMoneyService implements SendMoneyCommand {
         return false;
     }
 
-    private void requireAccountExists(AccountId targetAccountId) {
+    private void requireAccountExists(Account.AccountId targetAccountId) {
         Account account = loadAccountPort.loadAccount(targetAccountId, LocalDateTime.now());
         if (account == null) {
             throw new IllegalArgumentException("Account not exists");
