@@ -7,11 +7,13 @@ import com.mangkyu.hexagonal.account.application.port.out.LoadAccountPort;
 import com.mangkyu.hexagonal.account.application.port.out.UpdateAccountStatePort;
 import com.mangkyu.hexagonal.account.domain.Account;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 
+@Service
 @Validated
 @Transactional
 @RequiredArgsConstructor

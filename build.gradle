@@ -25,6 +25,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'io.github.mangkyu:spring-boot-test-automock:0.0.4'
+
 }
 
 tasks.named('test') {
