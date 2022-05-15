@@ -1,5 +1,6 @@
 package com.mangkyu.hexagonal.account.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,6 +8,7 @@ import java.math.BigInteger;
 
 @Getter
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class Money {
 
     public static Money ZERO = Money.of(0L);
@@ -38,6 +40,10 @@ public class Money {
 
     public boolean isPositiveOrZero(){
         return this.amount.compareTo(BigInteger.ZERO) >= 0;
+    }
+
+    public boolean isGreaterThan(Money money){
+        return this.amount.compareTo(money.amount) >= 1;
     }
 
     public Long toLong() {

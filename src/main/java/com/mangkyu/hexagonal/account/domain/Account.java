@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
@@ -66,6 +67,11 @@ public class Account {
                         this.calculateBalance(),
                         money.negate())
                 .isPositiveOrZero();
+    }
+
+
+    public Optional<AccountId> getId(){
+        return Optional.ofNullable(this.id);
     }
 
     @Getter

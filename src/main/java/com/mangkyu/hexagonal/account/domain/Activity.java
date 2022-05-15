@@ -13,8 +13,8 @@ public class Activity {
 
     private final ActivityId id;
     private final Account.AccountId ownerAccountId;
-    private final Account.AccountId targetAccountId;
     private final Account.AccountId sourceAccountId;
+    private final Account.AccountId targetAccountId;
     private final LocalDateTime timestamp;
     private final Money money;
 

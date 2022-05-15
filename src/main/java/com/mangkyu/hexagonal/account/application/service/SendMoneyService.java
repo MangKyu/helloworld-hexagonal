@@ -20,21 +20,51 @@ class SendMoneyService implements SendMoneyCommand {
     private final LoadAccountPort loadAccountPort;
     private final AccountLock accountLock;
     private final UpdateAccountStatePort updateAccountStatePort;
+    private final MoneyTransferProperties moneyTransferProperties;
 
     @Override
-    public boolean sendMoney(SendMoneyRequest sendMoneyRequest) {
-        requireAccountExists(sendMoneyRequest.getSourceAccountId());
-        requireAccountExists(sendMoneyRequest.getTargetAccountId());
-        // TODO: 비즈니스 규칙 검증
-        // TODO: 모델 상태 조작
-        // TODO: 출력값 반환
-        return false;
+    public boolean sendMoney(SendMoneyRequest request) {
+        checkThreshold(request);
+
+        LocalDateTime baselineDate = LocalDateTime.now().minusDays(10);
+
+        Account sourceAccount = loadAccountPort.loadAccount(
+                request.getSourceAccountId(),
+                baselineDate);
+
+        Account targetAccount = loadAccountPort.loadAccount(
+                request.getTargetAccountId(),
+                baselineDate);
+
+        Account.AccountId sourceAccountId = sourceAccount.getId()
+                .orElseThrow(() -> new IllegalStateException("expected source account ID not to be empty"));
+        Account.AccountId targetAccountId = targetAccount.getId()
+                .orElseThrow(() -> new IllegalStateException("expected target account ID not to be empty"));
+
+        accountLock.lockAccount(sourceAccountId);
+        if (!sourceAccount.withdraw(request.getMoney(), targetAccountId)) {
+            accountLock.releaseAccount(sourceAccountId);
+            return false;
+        }
+
+        accountLock.lockAccount(targetAccountId);
+        if (!targetAccount.deposit(request.getMoney(), sourceAccountId)) {
+            accountLock.releaseAccount(sourceAccountId);
+            accountLock.releaseAccount(targetAccountId);
+            return false;
+        }
+
+        updateAccountStatePort.updateActivities(sourceAccount);
+        updateAccountStatePort.updateActivities(targetAccount);
+
+        accountLock.releaseAccount(sourceAccountId);
+        accountLock.releaseAccount(targetAccountId);
+        return true;
     }
 
-    private void requireAccountExists(Account.AccountId targetAccountId) {
-        Account account = loadAccountPort.loadAccount(targetAccountId, LocalDateTime.now());
-        if (account == null) {
-            throw new IllegalArgumentException("Account not exists");
+    private void checkThreshold(SendMoneyRequest request) {
+        if(request.getMoney().isGreaterThan(moneyTransferProperties.getMaximumTransferThreshold())){
+            throw new ThresholdExceededException(moneyTransferProperties.getMaximumTransferThreshold(), request.getMoney());
         }
     }
 
